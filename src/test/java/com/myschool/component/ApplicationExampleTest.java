@@ -12,7 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
@@ -45,4 +45,28 @@ public class ApplicationExampleTest {
                 "Grades should sum to 314.0"
         );
     }
+    @Test
+    void test_addGradeResultsForSingleClass_Negative(){
+        assertNotEquals(0,studentGrades.addGradeResultsForSingleClass(
+                collegeStudent.getStudentGrades().getMathGradeResults()),
+                "Grades sum shouldn't 0"
+        );
+    }
+    @Test
+    void test_isGradeGreater_AssertTrue(){
+        assertTrue(studentGrades.isGradeGreater(90.00d, 70.00d),
+                "Should be True as 90 is greater than 70");
+    }
+    @Test
+    void test_isGradeGreater_AssertFalse(){
+        assertFalse(studentGrades.isGradeGreater(9.00d, 70.00d),
+                "Should be False as 9 is less than 70");
+    }
+    @Test
+    void test_checkNull(){
+        assertNotNull(
+                studentGrades.checkNull(collegeStudent.getStudentGrades().getMathGradeResults()),
+                "Object should not be null");
+    }
+
 }
