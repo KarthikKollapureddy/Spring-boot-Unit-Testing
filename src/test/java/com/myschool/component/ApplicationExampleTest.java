@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.ApplicationContext;
 
 import java.util.List;
 
@@ -29,6 +30,8 @@ public class ApplicationExampleTest {
     CollegeStudent collegeStudent;
     @Autowired
     StudentGrades studentGrades;
+    @Autowired
+    ApplicationContext context;
     @BeforeEach
     void beforeEach(){
         System.out.println("Testing "+appName+" with version "+appVersion);
@@ -67,6 +70,33 @@ public class ApplicationExampleTest {
         assertNotNull(
                 studentGrades.checkNull(collegeStudent.getStudentGrades().getMathGradeResults()),
                 "Object should not be null");
+    }
+    @Test
+    void test_StudentWithoutGrades(){
+        CollegeStudent student = context.getBean("collegeStudent",CollegeStudent.class);
+        student.setFirstname("Son");
+        student.setLastname("Goku");
+        student.setEmailAddress("Goku@student.in");
+        assertNotNull(student.getFirstname());
+        assertNotNull(student.getLastname());
+        assertNotNull(student.getEmailAddress());
+        assertNull(student.getStudentGrades());
+    }
+    @Test
+    void test_Student_Beans_are_Prototype(){
+        CollegeStudent newStudent = context.getBean("collegeStudent", CollegeStudent.class);
+        assertNotSame(collegeStudent,newStudent);
+    }
+    @Test
+    void test_addGradeResultsForSingleClass_Multiple(){
+        assertAll("Testing All Equals",
+                ()->assertEquals(
+                        314.0,studentGrades.addGradeResultsForSingleClass(
+                                collegeStudent.getStudentGrades().getMathGradeResults())),
+                ()->assertEquals(
+                        78.5,studentGrades.findGradePointAverage(
+                                collegeStudent.getStudentGrades().getMathGradeResults())
+                ));
     }
 
 }
